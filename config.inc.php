@@ -15,7 +15,7 @@ if ($debug){
 date_default_timezone_set('Europe/Amsterdam');
 
 /* define parse rules per webshop */
-$parserules = array(	
+$parserules = array(
 	'bartsmit.com' => array(
 		'image' => array(
 			'rule' => '#productMainImage',
@@ -155,7 +155,8 @@ $parserules = array(
 		),
 		'price' => array(
 			'rule' => 'meta[property=og:price:amount]',
-			'attribute' => 'content'
+			'attribute' => 'content',
+			'filter' => '/([0-9]*)/'
 		),
 	),
 
@@ -171,7 +172,7 @@ $parserules = array(
 		'price' => array(
 			'rule' => '#productPrice',
 			'attribute' => 'data-price',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
+			'filter' => '/([0-9]*)\.([0-9]{0,2})/'
 		),
 	),
 
@@ -192,32 +193,16 @@ $parserules = array(
 	),
 
 	'decathlon.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:title]',
+        'image' => array(
+			'rule' => 'meta[property=og:image]',
 			'attribute' => 'content'
 		),
 		'title' => array(
-			'rule' => 'meta[property=og:image]',
+			'rule' => 'meta[property=og:title]',
 			'attribute' => 'content'
 		),
 		'price' => array(
 			'rule' => '#real_price[itemprop=price]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-	
-	'scapino.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property="og:title"]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop="price"]',
 			'attribute' => 'content',
 			'filter' => '/([0-9]*)\.([0-9]*)/'
 		),
@@ -253,7 +238,7 @@ $parserules = array(
 			'filter' => '/([0-9]*)\.([0-9]*)/'
 		),
 	),
-			
+
 	'liesjeshoutenspeelgoed.nl' => array(
 		'image' => array(
 			'rule' => 'table#template tbody tr td table tbody tr td table tbody tr td img',
@@ -280,7 +265,7 @@ $parserules = array(
 			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'div.price-info div.price-box p.special-price span.price',
+			'rule' => 'span.regular-price span.price',
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
@@ -292,37 +277,38 @@ $parserules = array(
 			'attribute' => 'content'
 		),
 		'title' => array(
-			'rule' => 'div.price_detail h2',
+			'rule' => 'div.details_right_custom h1',
 			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'meta[property=product:price:amount]',
-			'attribute' => 'content'
+			'rule' => 'span.price',
+			'attribute' => 'plaintext',
+            'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
 	),
 
-	'bakker-hillegom.nl' => array(
+	/*'bakker.com' => array(
 		'image' => array(
-			'rule' => 'div.productImage a img',
+			'rule' => 'img.grid-12',
 			'attribute' => 'src'
 		),
 		'title' => array(
-			'rule' => 'div#productDetails h1',
+			'rule' => 'div.grid-18 h1',
 			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'div.info div.popUpPrice div.price div span',
+			'rule' => 'div.price',
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'vivara.nl' => array(
 		'image' => array(
 			'rule' => 'div.multimedia a img',
 			'attribute' => 'src'
 		),
-		'title' => array(			
+		'title' => array(
 			'rule' => 'div.product_view_details div h1',
 			'attribute' => 'plaintext'
 		),
@@ -333,7 +319,7 @@ $parserules = array(
 		),
 	),
 
-	'meesterslijpers.nl' => array(
+	/*'meesterslijpers.nl' => array(
 		'image' => array(
 			'rule' => 'meta[itemprop="image"]',
 			'attribute' => 'content'
@@ -347,7 +333,7 @@ $parserules = array(
 			'attribute' => 'content',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'knuffelparadijs.nl' => array(
 		'image' => array(
@@ -365,21 +351,21 @@ $parserules = array(
 		),
 	),
 
-	'boumanonline.nl' => array(
+	/*'boumanonline.nl' => array(
 		'image' => array(
-			'rule' => '',
-			'attribute' => ''
+			'rule' => 'div.gallery-image.active',
+			'attribute' => 'src'
 		),
 		'title' => array(
 			'rule' => 'div.product-details div.info div.product-title h2',
 			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'div.price-details div.price-wrapper span',
+			'rule' => 'p.special-price',
 			'attribute' => 'plaintext'
 		),
-	),
-	
+	),*/
+
 	'prijsvergelijk.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
@@ -418,17 +404,17 @@ $parserules = array(
 			'attribute' => 'src'
 		),
 		'title' => array(
-			'rule' => 'div.ptext h2',
+			'rule' => 'div.cproduct_left h1',
 			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'div.pprijsmiddle span',
+			'rule' => 'div.pprijsmiddle b',
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
 	),
 
-	'yoursurprise.nl' => array(
+	/*'yoursurprise.nl' => array(
 		'image' => array(
 			'rule' => '#gallery_1',
 			'attribute' => 'src'
@@ -442,7 +428,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'geboortexpress.nl' => array(
 		'image' => array(
@@ -470,12 +456,12 @@ $parserules = array(
 			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'span.old_price',
+			'rule' => 'div.big-price',
 			'attribute' => 'plaintext'
 		),
 	),
 
-	'all4running.nl' => array(
+	/*'all4running.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
@@ -489,7 +475,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'drogisterij.net' => array(
 		'image' => array(
@@ -537,7 +523,7 @@ $parserules = array(
 		),
 	),
 
-	'decopleinxxl.nl' => array(
+	/*'decopleinxxl.nl' => array(
 		'image' => array(
 			'rule' => '#main-image img',
 			'attribute' => 'src'
@@ -551,7 +537,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'gadgethouse.nl' => array(
 		'image' => array(
@@ -569,23 +555,6 @@ $parserules = array(
 		),
 	),
 
-	'cosmox.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:image]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property=og:title]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop=price]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
-
 	'baby-schoenen.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property=og:image]',
@@ -602,24 +571,7 @@ $parserules = array(
 		),
 	),
 
-	'dolcis.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:image]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'section.product-info h1',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop=price]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
-
-	'nedgame.nl' => array(
+	/*'nedgame.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property=og:image]',
 			'attribute' => 'content'
@@ -633,23 +585,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
-
-	'bobshop.nl' => array(
-			'image' => array(
-				'rule' => 'meta[property=og:image]',
-				'attribute' => 'content'
-			),
-			'title' => array(
-				'rule' => 'div.heading h1',
-				'attribute' => 'plaintext'
-			),
-			'price' => array(
-				'rule' => 'span.price',
-				'attribute' => 'plaintext',
-				'filter' => '/([0-9]*)\,([0-9]*)/'
-			),
-	),
+	),*/
 
 	'athleteshop.nl' => array(
 		'image' => array(
@@ -699,7 +635,7 @@ $parserules = array(
 		),
 	),
 
-	'tui.nl' => array(
+	/*'tui.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property=og:image]',
 			'attribute' => 'content'
@@ -712,23 +648,7 @@ $parserules = array(
 			'rule' => 'div.pricelabel a span',
 			'attribute' => 'plaintext'
 		),
-	),
-
-	'modern.nl' => array(
-		'image' => array(
-			'rule' => 'div#product-gallery div a img',
-			'attribute' => 'src'
-		),
-		'title' => array(
-			'rule' => 'div.page-heading h1',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop=price]',
-			'attribute' => 'content'
-		),
-	),
-
+	),*/
 
 	'coolgift.com' => array(
 		'image' => array(
@@ -746,7 +666,7 @@ $parserules = array(
 		),
 	),
 
-	'vindiqoffice.com' => array(
+	/*'vindiqoffice.com' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
@@ -760,23 +680,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
-
-	'kidsfavorites.nl' => array(
-		'image' => array(
-			'rule' => '#productImageZoomContainer img',
-			'attribute' => 'src'
-		),
-		'title' => array(
-			'rule' => 'div.contentContainer h1',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'div.bigprice',
-			'attribute' => 'plaintext',
-			'filter' => '/([0-9]*)\,([0-9]*)/'
-		),
-	),
+	),*/
 
 	'score.nl' => array(
 		'image' => array(
@@ -810,7 +714,7 @@ $parserules = array(
 		),
 	),
 
-	'stoerekindjes.nl' => array(
+	/*'stoerekindjes.nl' => array(
 		'image' => array(
 			'rule' => 'div#image-block img',
 			'attribute' => 'src'
@@ -824,23 +728,23 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
-	'cameranu.nl' => array(
+	/*'cameranu.nl' => array(
 		'image' => array(
 			'rule' => 'meta[name="twitter:image"]',
 			'attribute' => 'content'
 		),
 		'title' => array(
-			'rule' => 'div.product-h1-title h1',
-			'attribute' => 'plaintext'
+			'rule' => 'meta[name="twitter:title"]',
+			'attribute' => 'content'
 		),
 		'price' => array(
-			'rule' => 'strong[itemprop="price"]',
+			'rule' => 'span.font-x-large strong[itemprop="price"]',
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'gestrikt.nl' => array(
 		'image' => array(
@@ -859,7 +763,7 @@ $parserules = array(
 	),
 
 
-	'everybodycare.com' => array(
+	/*'everybodycare.com' => array(
 		'image' => array(
 			'rule' => 'meta[name="og:image"]',
 			'attribute' => 'content'
@@ -873,7 +777,7 @@ $parserules = array(
 			'attribute' => '',
 			'filter' => '/([0-9]*)\.([0-9]*)/'
 		),
-	),
+	),*/
 
 	'persempretoys.nl' => array(
 		'image' => array(
@@ -923,22 +827,6 @@ $parserules = array(
 		),
 	),
 
-	'ajaxshop.nl' => array(
-		'image' => array(
-			'rule' => 'a.big-image img',
-			'attribute' => 'src'
-		),
-		'title' => array(
-			'rule' => 'h1.article-title',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => '#articlePrice',
-			'attribute' => 'value',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
 	'cadeau.nl' => array(
 		'image' => array(
 			'rule' => 'a#zoom1 img',
@@ -955,33 +843,17 @@ $parserules = array(
 		),
 	),
 
-	'intreza.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:image]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property=og:title]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop=price]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
 	'centralpoint.nl' => array(
 		'image' => array(
-			'rule' => 'meta[property=og:image]',
+			'rule' => 'meta[name=twitter:image]',
 			'attribute' => 'content'
 		),
 		'title' => array(
-			'rule' => 'meta[property=og:title]',
-			'attribute' => 'content'
+			'rule' => 'div.title h1',
+			'attribute' => 'plaintext'
 		),
 		'price' => array(
-			'rule' => 'meta[name=twitter:data1]',
+			'rule' => 'meta[name=twitter:data2]',
 			'attribute' => 'content',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
@@ -1019,55 +891,6 @@ $parserules = array(
 		),
 	),
 
-	'scheerenfoppen.nl' => array(
-		'image' => array(
-			'rule' => 'div#product_image a img',
-			'attribute' => 'src'
-		),
-		'title' => array(
-			'rule' => 'article#productInfo form h1',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'div.productPrice',
-			'attribute' => 'plaintext',
-			'filter' => '/([0-9]*)\,([0-9]*)/'
-		),
-	),
-
-	'topvintage.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:image]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property=og:title]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[property="product:price:amount"]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
-	'blockstore.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:image]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property=og:title]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'h3.price',
-			'attribute' => 'plaintext',
-			'filter' => '/([0-9]*)\,([0-9]*)/'
-		),
-	),
-
-	
 	'gezelschapsspellenshop.nl' => array(
 			'image' => array(
 				'rule' => 'meta[property=og:image]',
@@ -1132,38 +955,6 @@ $parserules = array(
 		),
 	),
 
-	'duketoys.nl' => array(
-		'image' => array(
-			'rule' => '#image',
-			'attribute' => 'src'
-		),
-		'title' => array(
-			'rule' => 'div#content div table tbody tr td h1 span',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'div.product-info div div.price div span.price-new',
-			'attribute' => 'plaintext',
-			'filter' => '/([0-9]*)\,([0-9]*)/'
-		),
-	),
-
-	'invito.com' => array(
-		'image' => array(
-			'rule' => 'meta[property=og:image]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property=og:title]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop=price]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
 	'nicebeauty.com' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
@@ -1179,22 +970,6 @@ $parserules = array(
 			'filter' => '/([0-9]*)\.([0-9]*)/'
 		),
 	),
-
-	'maxwell.nl' => array(
-		'image' => array(
-			'rule' => '----',
-			'attribute' => '----'
-		),
-		'title' => array(
-			'rule' => 'title',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => '#extension_price div.price div.salePrice',
-			'attribute' => 'plaintext',
-			'filter' => '/([0-9]*)\,([0-9]*)/'
-		),
-	),	
 
 	'verkleedklerenonline.nl' => array(
 		'image' => array(
@@ -1244,7 +1019,7 @@ $parserules = array(
 		),
 	),
 
-	'posters.nl' => array(
+	/*'posters.nl' => array(
 		'image' => array(
 			'rule' => '#main-image img',
 			'attribute' => 'src'
@@ -1258,7 +1033,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'bestel.nl' => array(
 		'image' => array(
@@ -1277,7 +1052,7 @@ $parserules = array(
 	),
 
 
-	'alternate.nl' => array(
+	/*'alternate.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
@@ -1291,9 +1066,9 @@ $parserules = array(
 			'attribute' => 'content',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
-	'voetbalshop.nl' => array(
+	/*'voetbalshop.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
@@ -1307,23 +1082,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
-
-	'draagdoek.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'div.product-name h1',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'div.summary div p',
-			'attribute' => 'plaintext',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
+	),*/
 
 	'ako.nl' => array(
 		'image' => array(
@@ -1360,7 +1119,7 @@ $parserules = array(
 	'ffshoppen.nl' => array(
 		'image' => array(
 			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'	
+			'attribute' => 'content'
 		),
 		'title' => array(
 			'rule' => 'div.productdesc h2',
@@ -1374,7 +1133,7 @@ $parserules = array(
 	),
 
 
-	'bestekeus.nl' => array(
+	/*'bestekeus.nl' => array(
 		'image' => array(
 			'rule' => '#prodimg',
 			'attribute' => 'src'
@@ -1383,12 +1142,12 @@ $parserules = array(
 			'rule' => 'a.block_header',
 			'attribute' => 'plaintext'
 		),
-		'price' => array(	
+		'price' => array(
 			'rule' => '----',
 			'attribute' => '----',
 			'filter' => '/([0-9]*)\.([0-9]*)/'
 		),
-	),
+	),*/
 
 
 	'medion.com' => array(
@@ -1408,7 +1167,7 @@ $parserules = array(
 	),
 
 
-	'replacedirect.nl' => array(
+	/*'replacedirect.nl' => array(
 		'image' => array(
 			'rule' => '#bigImg',
 			'attribute' => 'src'
@@ -1422,9 +1181,9 @@ $parserules = array(
 			'attribute' => 'content',
 			'filter' => '/([0-9]*)\.([0-9]*)/'
 		),
-	),
+	),*/
 
-	'kinderlampenwinkel.nl' => array(
+	/*'kinderlampenwinkel.nl' => array(
 		'image' => array(
 			'rule' => '#img_big',
 			'attribute' => 'href'
@@ -1438,7 +1197,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'bresser-online.nl' => array(
 		'image' => array(
@@ -1474,7 +1233,7 @@ $parserules = array(
 	),
 
 	'mamzel.eu' => array(
-		'image' => array(	
+		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
 		),
@@ -1489,25 +1248,8 @@ $parserules = array(
 		),
 	),
 
-
-	'ultragadgets.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'title',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop="price"]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\,([0-9]*)/'
-		),
-	),
-
 	'tuinadvies.nl' => array(
-		'image' => array(	
+		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
 		),
@@ -1538,24 +1280,8 @@ $parserules = array(
 		),
 	),
 
-	'magicshop.nl' => array(
-		'image' => array(
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => '#PageTitle',
-			'attribute' => 'plaintext'
-		),
-		'price' => array(
-			'rule' => 'meta[itemprop="price"]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
 	'schattigebabykleertjes.nl' => array(
-		'image' => array(	
+		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
 		),
@@ -1570,25 +1296,8 @@ $parserules = array(
 		),
 	),
 
-
-	'bewustspeelgoed.nl' => array(
-		'image' => array(	
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property="og:title"]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[property="product:price:amount"]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
 	'bjornborg.com' => array(
-		'image' => array(	
+		'image' => array(
 			'rule' => 'div.nosto_product span.image_url',
 			'attribute' => 'plaintext'
 		),
@@ -1603,25 +1312,8 @@ $parserules = array(
 		)
 	),
 
-
-	'vivolanda.nl' => array(
-		'image' => array(
-			'rule' => '----',
-			'attribute' => '----'
-		),
-		'title' => array(
-			'rule' => '---',
-			'attribute' => '----'
-		),
-		'price' => array(
-			'rule' => '----',
-			'attribute' => '----',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-
 	'kayasieraden.nl' => array(
-		'image' => array(	
+		'image' => array(
 			'rule' => 'meta[property="og:image"]',
 			'attribute' => 'content'
 		),
@@ -1635,39 +1327,8 @@ $parserules = array(
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
 	),
-	
-	'thee-voor-thuis.nl' => array(
-		'image' => array(	
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property="og:title"]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'meta[property="og:price:amount"]',
-			'attribute' => 'content',
-			'filter' => '/([0-9]*)\.([0-9]*)/'
-		),
-	),
-    
-    'paktuit.oxfamnovib.nl' => array(
-		'image' => array(	
-			'rule' => 'meta[property="og:image"]',
-			'attribute' => 'content'
-		),
-		'title' => array(
-			'rule' => 'meta[property="og:title"]',
-			'attribute' => 'content'
-		),
-		'price' => array(
-			'rule' => 'div.price-box span.regular-price span.price',
-			'attribute' => 'plaintext'
-		),
-	),
 
-	'internet-bikes.com' => array(
+	/*'internet-bikes.com' => array(
 		'image' => array(
 			'rule' => '#image',
 			'attribute' => 'src'
@@ -1681,7 +1342,7 @@ $parserules = array(
 			'attribute' => 'plaintext',
 			'filter' => '/([0-9]*)\,([0-9]*)/'
 		),
-	),
+	),*/
 
 	'prachtigkado.nl' => array(
 		'image' => array(

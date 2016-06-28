@@ -28,6 +28,7 @@ class parseSite {
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_ENCODING, 1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 
 		if ($this->_debug){
 			curl_setopt($ch, CURLOPT_VERBOSE, true);
@@ -65,6 +66,7 @@ class parseSite {
 				);
 			}
 		}
+
 		return $response_array;
 	}
 
@@ -102,11 +104,54 @@ class parseSite {
 					if (isset($rule['filter']) && $name === 'price'){
 						$filter_array = array();
 						$match = preg_match($rule['filter'], $value, $filter_array);
+						$price_string = '';
 						if ($match){
-							$metadata_array[$name] = $filter_array[1].','.$filter_array[2];
+							$price_string = $filter_array[1].',';
+							if (isset($filter_array[2])){
+								$price_string .= $filter_array[2];
+							}
 						}
+						$metadata_array[$name] = $price_string;
 					} else {
 						$metadata_array[$name] = $value;
+					}
+
+					if ($name === 'price'){
+						$normalize_array = array();
+						$match_normalize = preg_match('/([0-9]*)\.?\,?([0-9]*)?/', $metadata_array[$name], $normalize_array);
+						if ($match_normalize){
+							$price_string = $normalize_array[1].',';
+							if ($normalize_array[2] !== ''){
+								if (strlen($normalize_array[2]) === 1){
+									$price_string .= $normalize_array[2].'0';
+								} else {
+									$price_string .= substr($normalize_array[2],0,2);
+								}
+							} else {
+								$price_string .= '00';
+							}
+						}
+						$metadata_array[$name] = $price_string;
+					}
+
+					/* check if image contains valid url */
+					if ($name === 'image'){
+						$match_image = preg_match('/https?:\/\/.*/', $metadata_array[$name], $image_array);
+						if (!$match_image){
+							$match_image = preg_match('/\/\/.*/', $metadata_array[$name], $image_array);
+						}
+
+						if (!$match_image){
+							$match_image = preg_match('/\/.*/', $metadata_array[$name], $image_array);
+							if ($match_image){
+								//echo 'upgraded image'."\n";
+								$metadata_array[$name] = 'http://'.$shop.$metadata_array[$name];
+							}
+						}
+					}
+
+					if ($name === 'title'){
+						$metadata_array[$name] = preg_replace('!\s+!', ' ', $metadata_array[$name]);
 					}
 				} else {
 					$metadata_array[$name] = false;
@@ -128,7 +173,7 @@ class parseSite {
 			$response_data = $response_array['data'];
 			$metadata_array = $this->_parse_data($response_data);
 		} else {
-			$metadata_array = false;
+			$metadata_array = $response_array;
 		}
 
 		return $metadata_array;
